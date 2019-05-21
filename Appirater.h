@@ -175,7 +175,7 @@ extern NSString *const kAppiraterReminderRequestDate;
  and let Appirater handle the bookkeeping of deciding when to ask the user
  whether to rate the app.
  */
-+ (void)rateApp;
++ (void)rateAppInStore;
 
 /*!
  Tells Appirater to immediately close any open rating modals (e.g. StoreKit rating VCs).
