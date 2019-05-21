@@ -290,43 +290,27 @@ static BOOL _alwaysUseMainBundle = NO;
         if (displayRateLaterButton) {
             [buttons addObject:self.alertRateLaterTitle];
         }
-        if (NSStringFromClass([UIAlertController class]) != nil) {
-            [buttons addObject:self.alertCancelTitle];
-            
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.alertTitle message:self.alertMessage preferredStyle:UIAlertControllerStyleAlert];
-            for (NSInteger i = 0; i < buttons.count; i++) {
-                UIAlertActionStyle style = i == buttons.count - 1 ? UIAlertActionStyleCancel : UIAlertActionStyleDefault;
-                [alert addAction:[UIAlertAction actionWithTitle:buttons[i] style:style handler:^(UIAlertAction * _Nonnull action) {
-                    NSString *title = action.title;
-                    NSInteger buttonIndex = -1;
-                    if ([title isEqual:self.alertCancelTitle]) {
-                        buttonIndex = 0;
-                    } else if ([title isEqual:self.alertRateTitle]) {
-                        buttonIndex = 1;
-                    } else if ([title isEqual:self.alertRateLaterTitle]) {
-                        buttonIndex = 2;
-                    }
-                    
-                    [self alertViewDidDismissWithButtonIndex:buttonIndex];
-                }]];
-            }
-            [[Appirater getRootViewController] presentViewController:alert animated:YES completion:nil];
-            self.ratingAlert = alert;
-        } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:self.alertTitle
-                                                                message:self.alertMessage
-                                                               delegate:self
-                                                      cancelButtonTitle:self.alertCancelTitle
-                                                      otherButtonTitles:nil];
-            for (NSString *button in buttons) {
-                [alertView addButtonWithTitle:button];
-            }
-            self.ratingAlert = alertView;
-            [alertView show];
-#pragma clang diagnostic pop
+        [buttons addObject:self.alertCancelTitle];
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:self.alertTitle message:self.alertMessage preferredStyle:UIAlertControllerStyleAlert];
+        for (NSInteger i = 0; i < buttons.count; i++) {
+            UIAlertActionStyle style = i == buttons.count - 1 ? UIAlertActionStyleCancel : UIAlertActionStyleDefault;
+            [alert addAction:[UIAlertAction actionWithTitle:buttons[i] style:style handler:^(UIAlertAction * _Nonnull action) {
+                NSString *title = action.title;
+                NSInteger buttonIndex = -1;
+                if ([title isEqual:self.alertCancelTitle]) {
+                    buttonIndex = 0;
+                } else if ([title isEqual:self.alertRateTitle]) {
+                    buttonIndex = 1;
+                } else if ([title isEqual:self.alertRateLaterTitle]) {
+                    buttonIndex = 2;
+                }
+                
+                [self alertViewDidDismissWithButtonIndex:buttonIndex];
+            }]];
         }
+        [[Appirater getRootViewController] presentViewController:alert animated:YES completion:nil];
+        self.ratingAlert = alert;
     }
 
   if (delegate && [delegate respondsToSelector:@selector(appiraterDidDisplayAlert:)]) {
@@ -534,13 +518,6 @@ static BOOL _alwaysUseMainBundle = NO;
     return [[NSUserDefaults standardUserDefaults] boolForKey:kAppiraterRatedCurrentVersion];
 }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-implementations"
-+ (void)appLaunched {
-	[Appirater appLaunched:YES];
-}
-#pragma GCC diagnostic pop
-
 + (void)appLaunched:(BOOL)canPromptForRating {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),
                    ^{
@@ -557,14 +534,7 @@ static BOOL _alwaysUseMainBundle = NO;
 }
 
 - (BOOL)isRatingAlertVisible {
-    if (NSStringFromClass([UIAlertController class]) != nil) {
-        return ((UIAlertController *)self.ratingAlert).view.superview != nil;
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        return ((UIAlertView *)self.ratingAlert).visible;
-#pragma clang diagnostic pop
-    }
+    return ((UIAlertController *)self.ratingAlert).view.superview != nil;
 }
 
 - (void)hideRatingAlert {
@@ -599,13 +569,6 @@ static BOOL _alwaysUseMainBundle = NO;
        [[Appirater sharedInstance] incrementSignificantEventAndRate:canPromptForRating];
     }];
 }
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-implementations"
-+ (void)showPrompt {
-  [Appirater tryToShowPrompt];
-}
-#pragma GCC diagnostic pop
 
 + (void)tryToShowPrompt {
   [[Appirater sharedInstance] showPromptWithChecks:true
@@ -691,13 +654,6 @@ static BOOL _alwaysUseMainBundle = NO;
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:reviewURL] options:@{} completionHandler:nil];
 #endif
 }
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    [self alertViewDidDismissWithButtonIndex:buttonIndex];
-}
-#pragma clang diagnostic pop
 
 - (void)alertViewDidDismissWithButtonIndex:(NSInteger)buttonIndex {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];

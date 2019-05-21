@@ -85,11 +85,8 @@ extern NSString *const kAppiraterReminderRequestDate;
  */
 #define APPIRATER_RATE_LATER			NSLocalizedStringFromTableInBundle(@"Remind me later", @"AppiraterLocalizable", [Appirater bundle], nil)
 
-@interface Appirater : NSObject <UIAlertViewDelegate, SKStoreProductViewControllerDelegate>
+@interface Appirater : NSObject <SKStoreProductViewControllerDelegate>
 
-/*!
- UIAlertController for iOS 8 and later, otherwise UIAlertView
- */
 @property(nonatomic, strong) id ratingAlert;
 @property(nonatomic) BOOL openInAppStore;
 #if __has_feature(objc_arc_weak)
@@ -307,25 +304,5 @@ extern NSString *const kAppiraterReminderRequestDate;
  The bundle localized strings will be loaded from.
 */
 +(NSBundle *)bundle;
-
-@end
-
-@interface Appirater(Deprecated)
-
-/*!
- DEPRECATED: While still functional, it's better to use
- appLaunched:(BOOL)canPromptForRating instead.
- 
- Calls [Appirater appLaunched:YES]. See appLaunched: for details of functionality.
- */
-+ (void)appLaunched __attribute__((deprecated)); 
-
-/*!
- DEPRECATED: While still functional, it's better to use
- tryToShowPrompt instead.
- 
- Calls [Appirater tryToShowPrompt]. See tryToShowPrompt for details of functionality.
- */
-+ (void)showPrompt __attribute__((deprecated));
 
 @end
