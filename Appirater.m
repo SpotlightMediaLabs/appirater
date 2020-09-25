@@ -36,7 +36,7 @@
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <CFNetwork/CFNetwork.h>
-#import "Appirater.h"
+#import <Appirater/Appirater.h>
 #include <netinet/in.h>
 
 #if ! __has_feature(objc_arc)
